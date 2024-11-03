@@ -1,7 +1,7 @@
 // Set up Three.js scene, camera, and renderer
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.z = 5;
+const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+camera.position.set(0, 0, 10);
 
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -14,15 +14,21 @@ cssRenderer.domElement.style.position = 'absolute';
 cssRenderer.domElement.style.top = '0';
 document.body.appendChild(cssRenderer.domElement);
 
+// Add OrbitControls for navigation
+const controls = new THREE.OrbitControls(camera, cssRenderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.05;
+controls.minDistance = 5;
+controls.maxDistance = 20;
+
 // Lighting
 const light = new THREE.PointLight(0xffffff, 1, 100);
 light.position.set(10, 10, 10);
 scene.add(light);
 
-// Create clickable panels with iframes
+// Function to create clickable iframe panels
 function createIframePanel(url, position) {
-    // Three.js plane for visual reference
-    const geometry = new THREE.PlaneGeometry(3, 2);
+    const geometry = new THREE.PlaneGeometry(2, 1.5); // Smaller panel size
     const material = new THREE.MeshBasicMaterial({ color: 0x3333ff, opacity: 0.5, transparent: true });
     const plane = new THREE.Mesh(geometry, material);
     plane.position.set(position.x, position.y, position.z);
@@ -31,8 +37,8 @@ function createIframePanel(url, position) {
     // Create iframe element
     const iframe = document.createElement('iframe');
     iframe.src = url;
-    iframe.style.width = '600px';
-    iframe.style.height = '400px';
+    iframe.style.width = '400px'; // Adjusted iframe size
+    iframe.style.height = '300px';
     iframe.style.border = 'none';
 
     // Create CSS3DObject to hold iframe
@@ -42,15 +48,23 @@ function createIframePanel(url, position) {
     scene.add(cssObject);
 }
 
-// Example panels with links
-createIframePanel("https://www.martineztrade.com", { x: -3, y: 1, z: -5 });
-createIframePanel("https://martinezworldwide.wixsite.com/martinezworldwide", { x: 3, y: 1, z: -5 });
+// Example clickable panels
+createIframePanel("https://www.martineztrade.com", { x: -2, y: 1, z: -5 });
+createIframePanel("https://martinezworldwide.wixsite.com/martinezworldwide", { x: 2, y: 1, z: -5 });
+
+// Responsive resize
+window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    cssRenderer.setSize(window.innerWidth, window.innerHeight);
+});
 
 // Animation loop
 function animate() {
     requestAnimationFrame(animate);
     renderer.render(scene, camera);
     cssRenderer.render(scene, camera);
+    controls.update();
 }
 animate();
-
