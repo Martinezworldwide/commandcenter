@@ -1,11 +1,11 @@
 // Set up Three.js scene, camera, and renderer
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.set(0, 0, 10);
+camera.position.set(0, 0, 15); // Move camera farther back
 
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.setClearColor(0x1a1a1a); // Set background color for visibility
+renderer.setClearColor(0x1a1a1a); // Background color
 document.body.appendChild(renderer.domElement);
 
 // CSS3DRenderer for iframes in 3D space
@@ -13,7 +13,7 @@ const cssRenderer = new THREE.CSS3DRenderer();
 cssRenderer.setSize(window.innerWidth, window.innerHeight);
 cssRenderer.domElement.style.position = 'absolute';
 cssRenderer.domElement.style.top = '0';
-cssRenderer.domElement.style.backgroundColor = 'rgba(26, 26, 26, 0.8)'; // Background for CSS renderer
+cssRenderer.domElement.style.backgroundColor = 'rgba(26, 26, 26, 0.8)';
 document.body.appendChild(cssRenderer.domElement);
 
 // Ambient and directional lighting
@@ -26,8 +26,8 @@ scene.add(directionalLight);
 
 // Function to create clickable iframe panels
 function createIframePanel(url, position) {
-    const geometry = new THREE.PlaneGeometry(2, 1.5);
-    const material = new THREE.MeshBasicMaterial({ color: 0x3333ff }); // Basic material for testing
+    const geometry = new THREE.PlaneGeometry(1.5, 1); // Smaller panel size
+    const material = new THREE.MeshBasicMaterial({ color: 0x3333ff, opacity: 0.5, transparent: true });
     const plane = new THREE.Mesh(geometry, material);
     plane.position.set(position.x, position.y, position.z);
     scene.add(plane);
@@ -35,8 +35,8 @@ function createIframePanel(url, position) {
     // Create iframe element
     const iframe = document.createElement('iframe');
     iframe.src = url;
-    iframe.style.width = '400px';
-    iframe.style.height = '300px';
+    iframe.style.width = '300px';  // Reduce width
+    iframe.style.height = '200px'; // Reduce height
     iframe.style.border = 'none';
 
     // Create CSS3DObject to hold iframe
@@ -47,8 +47,8 @@ function createIframePanel(url, position) {
 }
 
 // Example clickable panels
-createIframePanel("https://www.martineztrade.com", { x: -2, y: 1, z: -5 });
-createIframePanel("https://martinezworldwide.wixsite.com/martinezworldwide", { x: 2, y: 1, z: -5 });
+createIframePanel("https://www.martineztrade.com", { x: -2, y: 0, z: -5 });
+createIframePanel("https://martinezworldwide.wixsite.com/martinezworldwide", { x: 2, y: 0, z: -5 });
 
 // Responsive resize
 window.addEventListener('resize', () => {
