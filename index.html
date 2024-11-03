@@ -5,128 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>3D Command Center</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three/examples/js/renderers/CSS3DRenderer.js"></script>
     <style>
         body {
             margin: 0;
             overflow: hidden;
             font-family: Arial, sans-serif;
         }
-        .iframe-overlay {
-            position: absolute;
-            top: 10%;
-            left: 10%;
-            width: 80%;
-            height: 80%;
-            border: 2px solid black;
-            display: none;
-        }
-        .close-button {
-            position: absolute;
-            top: 5%;
-            right: 5%;
-            padding: 10px;
-            background-color: red;
-            color: white;
-            font-weight: bold;
-            border: none;
-            cursor: pointer;
-            display: none;
-        }
     </style>
 </head>
 <body>
-    <iframe class="iframe-overlay" id="iframeOverlay"></iframe>
-    <button class="close-button" id="closeButton">Close</button>
-
-    <script>
-        // Set up the scene, camera, and renderer
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer();
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        document.body.appendChild(renderer.domElement);
-
-        // Set up lighting
-        const light = new THREE.DirectionalLight(0xffffff, 1);
-        light.position.set(10, 10, 10);
-        scene.add(light);
-
-        // Set camera position
-        camera.position.z = 5;
-
-        // Function to create clickable objects with assigned links
-        function createClickableObject(link, color = 0xff0000, position = {x: 0, y: 0, z: 0}) {
-            const geometry = new THREE.BoxGeometry();
-            const material = new THREE.MeshBasicMaterial({ color: color });
-            const cube = new THREE.Mesh(geometry, material);
-            cube.position.set(position.x, position.y, position.z);
-
-            // Store the link as a property on the object
-            cube.userData = { link: link };
-            scene.add(cube);
-
-            return cube;
-        }
-
-        // Example clickable objects
-        createClickableObject("https://example1.com", 0xff0000, {x: -2, y: 0, z: 0});
-        createClickableObject("https://example2.com", 0x00ff00, {x: 2, y: 0, z: 0});
-
-        // Raycasting for click detection
-        const raycaster = new THREE.Raycaster();
-        const mouse = new THREE.Vector2();
-
-        function onMouseClick(event) {
-            // Convert mouse position to normalized device coordinates
-            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
-            // Raycast to find intersected objects
-            raycaster.setFromCamera(mouse, camera);
-            const intersects = raycaster.intersectObjects(scene.children);
-
-            if (intersects.length > 0) {
-                const link = intersects[0].object.userData.link;
-                if (link) {
-                    openIframe(link);
-                }
-            }
-        }
-
-        // Attach click event listener
-        window.addEventListener('click', onMouseClick, false);
-
-        // Open link in an iframe overlay
-        function openIframe(link) {
-            const iframe = document.getElementById('iframeOverlay');
-            iframe.src = link;
-            iframe.style.display = 'block';
-
-            const closeButton = document.getElementById('closeButton');
-            closeButton.style.display = 'block';
-        }
-
-        // Close the iframe overlay
-        document.getElementById('closeButton').onclick = () => {
-            const iframe = document.getElementById('iframeOverlay');
-            iframe.style.display = 'none';
-            iframe.src = '';
-
-            const closeButton = document.getElementById('closeButton');
-            closeButton.style.display = 'none';
-        };
-
-        // Animate the scene
-        function animate() {
-            requestAnimationFrame(animate);
-            renderer.render(scene, camera);
-        }
-        animate();
-    </script>
-</body>
-</html>
-
-
-    <script src="script.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
