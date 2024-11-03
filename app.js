@@ -43,8 +43,8 @@ function createIframePanel(url, position) {
 }
 
 // Example panels with links
-createIframePanel("https://example1.com", { x: -3, y: 1, z: -5 });
-createIframePanel("https://example2.com", { x: 3, y: 1, z: -5 });
+createIframePanel("https://www.martineztrade.com", { x: -3, y: 1, z: -5 });
+createIframePanel("https://martinezworldwide.wixsite.com/martinezworldwide", { x: 3, y: 1, z: -5 });
 
 // Animation loop
 function animate() {
