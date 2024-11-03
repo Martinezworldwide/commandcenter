@@ -5,6 +5,7 @@ camera.position.set(0, 0, 10);
 
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setClearColor(0x1a1a1a); // Set background color for visibility
 document.body.appendChild(renderer.domElement);
 
 // CSS3DRenderer for iframes in 3D space
@@ -12,24 +13,21 @@ const cssRenderer = new THREE.CSS3DRenderer();
 cssRenderer.setSize(window.innerWidth, window.innerHeight);
 cssRenderer.domElement.style.position = 'absolute';
 cssRenderer.domElement.style.top = '0';
+cssRenderer.domElement.style.backgroundColor = 'rgba(26, 26, 26, 0.8)'; // Background for CSS renderer
 document.body.appendChild(cssRenderer.domElement);
 
-// Add OrbitControls for navigation
-const controls = new THREE.OrbitControls(camera, cssRenderer.domElement);
-controls.enableDamping = true;
-controls.dampingFactor = 0.05;
-controls.minDistance = 5;
-controls.maxDistance = 20;
+// Ambient and directional lighting
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.5); // General lighting
+scene.add(ambientLight);
 
-// Lighting
-const light = new THREE.PointLight(0xffffff, 1, 100);
-light.position.set(10, 10, 10);
-scene.add(light);
+const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+directionalLight.position.set(10, 10, 10);
+scene.add(directionalLight);
 
 // Function to create clickable iframe panels
 function createIframePanel(url, position) {
-    const geometry = new THREE.PlaneGeometry(2, 1.5); // Smaller panel size
-    const material = new THREE.MeshBasicMaterial({ color: 0x3333ff, opacity: 0.5, transparent: true });
+    const geometry = new THREE.PlaneGeometry(2, 1.5);
+    const material = new THREE.MeshBasicMaterial({ color: 0x3333ff }); // Basic material for testing
     const plane = new THREE.Mesh(geometry, material);
     plane.position.set(position.x, position.y, position.z);
     scene.add(plane);
@@ -37,7 +35,7 @@ function createIframePanel(url, position) {
     // Create iframe element
     const iframe = document.createElement('iframe');
     iframe.src = url;
-    iframe.style.width = '400px'; // Adjusted iframe size
+    iframe.style.width = '400px';
     iframe.style.height = '300px';
     iframe.style.border = 'none';
 
@@ -68,3 +66,5 @@ function animate() {
     controls.update();
 }
 animate();
+
+
