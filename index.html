@@ -5,34 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>3D Command Center - Conglomerate Engineering Management</title>
     
-    <!-- Three.js core library -->
-    <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+    <!-- Use local Three.js libraries -->
+    <script src="lib/three/three.min.js"></script>
+    <script src="lib/three/examples/js/controls/OrbitControls.js"></script>
+    <script src="lib/three/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="lib/three/examples/js/renderers/CSS3DRenderer.js"></script>
     
-    <!-- Import maps for Three.js modules -->
-    <script type="importmap">
-      {
-        "imports": {
-          "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
-          "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
-        }
-      }
-    </script>
-    
-    <!-- Standalone versions for older Three.js examples -->
-    <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/controls/OrbitControls.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/loaders/GLTFLoader.js"></script>
-    
-    <!-- Use direct unpkg link for CSS3DRenderer -->
-    <script src="https://unpkg.com/three@0.160.0/examples/js/renderers/CSS3DRenderer.js"></script>
-    
-    <!-- Stats.js for performance monitoring -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/stats.js/r17/Stats.min.js"></script>
-    
-    <!-- TWEEN library for smooth animations -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js"></script>
-    
-    <!-- UI libraries -->
-    <script src="https://cdn.jsdelivr.net/npm/dat.gui@0.7.9/build/dat.gui.min.js"></script>
+    <!-- Additional libraries -->
+    <script src="lib/stats/stats.min.js"></script>
+    <script src="lib/tween/tween.umd.js"></script>
+    <script src="lib/dat-gui/dat.gui.min.js"></script>
     
     <link rel="stylesheet" href="styles.css">
     <style>

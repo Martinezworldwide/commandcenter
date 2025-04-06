@@ -22,6 +22,9 @@ const config = {
 
 // Initialize the application
 document.addEventListener('DOMContentLoaded', () => {
+    // Make sure TWEEN is available globally
+    TWEEN = window.TWEEN;
+    
     // Initialize only when DOM is fully loaded to ensure all scripts are available
     init();
     animate();
@@ -29,62 +32,84 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Initialize the 3D environment
 function init() {
-    // Cache DOM elements
-    container = document.getElementById('container');
-    
-    // Set up scene
-    scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0a0a1a);
-    
-    // Set up camera
-    camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.set(0, 0, 20);
-    
-    // Set up lighting
-    addLighting();
-    
-    // Set up renderers
-    setupRenderers();
-    
-    // Add orbit controls
-    controls = new THREE.OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
-    controls.dampingFactor = 0.05;
-    controls.screenSpacePanning = false;
-    controls.minDistance = 5;
-    controls.maxDistance = 50;
-    controls.autoRotate = config.autoRotate;
-    controls.autoRotateSpeed = 0.5;
-    
-    // Set up raycaster for interaction
-    raycaster = new THREE.Raycaster();
-    mouse = new THREE.Vector2();
-    
-    // Add event listeners
-    window.addEventListener('resize', onWindowResize, false);
-    window.addEventListener('click', onClick, false);
-    window.addEventListener('mousemove', onMouseMove, false);
-    
-    // Create 3D elements
-    createNetworkNodes();
-    
-    // Set up stats monitor
-    stats = new Stats();
-    container.appendChild(stats.dom);
-    
-    // Set up GUI
-    setupGUI();
-    
-    // Set camera navigation function
-    window.cameraNavigation = moveCamera;
-    
-    // Hide loading indicator
-    setTimeout(() => {
-        const loadingElement = document.getElementById('loading');
-        if (loadingElement) {
-            loadingElement.classList.add('hidden');
-        }
-    }, 1500);
+    try {
+        // Cache DOM elements
+        container = document.getElementById('container');
+        
+        // Set up scene
+        scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x0a0a1a);
+        
+        // Set up camera
+        camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(0, 0, 20);
+        
+        // Set up lighting
+        addLighting();
+        
+        // Set up renderers
+        setupRenderers();
+        
+        // Add orbit controls
+        controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+        controls.screenSpacePanning = false;
+        controls.minDistance = 5;
+        controls.maxDistance = 50;
+        controls.autoRotate = config.autoRotate;
+        controls.autoRotateSpeed = 0.5;
+        
+        // Set up raycaster for interaction
+        raycaster = new THREE.Raycaster();
+        mouse = new THREE.Vector2();
+        
+        // Add event listeners
+        window.addEventListener('resize', onWindowResize, false);
+        window.addEventListener('click', onClick, false);
+        window.addEventListener('mousemove', onMouseMove, false);
+        
+        // Create 3D elements
+        createNetworkNodes();
+        
+        // Set up stats monitor
+        setupStats();
+        
+        // Set up GUI
+        setupGUI();
+        
+        // Set camera navigation function
+        window.cameraNavigation = moveCamera;
+        
+        // Hide loading indicator
+        setTimeout(() => {
+            const loadingElement = document.getElementById('loading');
+            if (loadingElement) {
+                loadingElement.classList.add('hidden');
+            }
+        }, 1500);
+    } catch (e) {
+        console.error("Error initializing 3D environment:", e);
+        document.body.innerHTML += `<div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); background:rgba(0,0,0,0.8); padding:20px; color:white; border-radius:10px;">
+            <h2>Error Loading 3D Environment</h2>
+            <p>${e.message}</p>
+            <p>Please try a different browser or check your internet connection.</p>
+        </div>`;
+    }
+}
+
+// Set up statistics monitor
+function setupStats() {
+    try {
+        stats = new Stats();
+        stats.domElement.style.position = 'absolute';
+        stats.domElement.style.top = '0px';
+        container.appendChild(stats.dom || stats.domElement);
+    } catch (e) {
+        console.warn('Stats initialization failed:', e);
+        // Create dummy stats object
+        stats = { update: function() {} };
+    }
 }
 
 // Set up lighting
@@ -773,6 +798,3 @@ function animate() {
         }
     }
 }
-
-// Initialize TWEEN library
-TWEEN = window.TWEEN;
