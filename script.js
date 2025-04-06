@@ -166,9 +166,11 @@ function createDataOverview() {
     overviewPanel.className = 'panel overview-panel';
     
     overviewPanel.innerHTML = `
-        <div class="panel-header">
+        <div class="panel-header" id="overview-panel-header">
             <div class="panel-title">Conglomerate Overview</div>
-            <button class="minimize-btn">_</button>
+            <div class="panel-controls">
+                <button class="minimize-btn">_</button>
+            </div>
         </div>
         <div class="panel-content">
             <div class="metric-grid">
@@ -198,6 +200,9 @@ function createDataOverview() {
     
     document.body.appendChild(overviewPanel);
     
+    // Make the panel draggable
+    makeDraggable(overviewPanel);
+    
     // Add minimize functionality
     const minimizeBtn = overviewPanel.querySelector('.minimize-btn');
     minimizeBtn.addEventListener('click', () => {
@@ -212,6 +217,56 @@ function createDataOverview() {
             overviewPanel.style.height = 'auto';
         }
     });
+}
+
+// Make an element draggable
+function makeDraggable(element) {
+    const header = element.querySelector('.panel-header');
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    
+    if (header) {
+        // If present, the header is where you move the DIV from
+        header.style.cursor = 'move';
+        header.onmousedown = dragMouseDown;
+    } else {
+        // Otherwise, move the DIV from anywhere inside the DIV
+        element.onmousedown = dragMouseDown;
+    }
+
+    function dragMouseDown(e) {
+        e.preventDefault();
+        // Get the mouse cursor position at startup
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        // Call a function whenever the cursor moves
+        document.onmousemove = elementDrag;
+        
+        // Add an active class for visual feedback
+        element.classList.add('dragging');
+    }
+
+    function elementDrag(e) {
+        e.preventDefault();
+        // Calculate the new cursor position
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        // Set the element's new position
+        element.style.top = (element.offsetTop - pos2) + 'px';
+        element.style.left = (element.offsetLeft - pos1) + 'px';
+        element.style.right = 'auto'; // Remove the right positioning to avoid conflicts
+    }
+
+    function closeDragElement() {
+        // Stop moving when mouse button is released
+        document.onmouseup = null;
+        document.onmousemove = null;
+        
+        // Remove the active class
+        element.classList.remove('dragging');
+    }
 }
 
 // Show alert or notification panel
@@ -431,6 +486,93 @@ function showSectionDashboard(section) {
                 </div>
             `;
         }
+        
+        // Add essential engineering tools
+        specialContentHTML += `
+            <div class="dashboard-section">
+                <h3>Essential Engineering Tools</h3>
+                <div class="tools-list">
+                    <div class="tool-item">
+                        <div class="tool-name">GitHub</div>
+                        <div class="tool-desc">Version control & collaboration</div>
+                        <a href="https://github.com" target="_blank" class="tool-link">Visit</a>
+                    </div>
+                    <div class="tool-item">
+                        <div class="tool-name">Jira</div>
+                        <div class="tool-desc">Project tracking & management</div>
+                        <a href="https://www.atlassian.com/software/jira" target="_blank" class="tool-link">Visit</a>
+                    </div>
+                    <div class="tool-item">
+                        <div class="tool-name">Jenkins</div>
+                        <div class="tool-desc">CI/CD automation</div>
+                        <a href="https://www.jenkins.io" target="_blank" class="tool-link">Visit</a>
+                    </div>
+                    <div class="tool-item">
+                        <div class="tool-name">Stack Overflow</div>
+                        <div class="tool-desc">Developer knowledge base</div>
+                        <a href="https://stackoverflow.com" target="_blank" class="tool-link">Visit</a>
+                    </div>
+                </div>
+            </div>
+        `;
+    } else if (section === 'Finance') {
+        // Add essential finance tools
+        specialContentHTML += `
+            <div class="dashboard-section">
+                <h3>Essential Finance Tools</h3>
+                <div class="tools-list">
+                    <div class="tool-item">
+                        <div class="tool-name">Bloomberg Terminal</div>
+                        <div class="tool-desc">Financial market data & analysis</div>
+                        <a href="https://www.bloomberg.com/professional/solution/bloomberg-terminal/" target="_blank" class="tool-link">Visit</a>
+                    </div>
+                    <div class="tool-item">
+                        <div class="tool-name">QuickBooks</div>
+                        <div class="tool-desc">Accounting & financial management</div>
+                        <a href="https://quickbooks.intuit.com" target="_blank" class="tool-link">Visit</a>
+                    </div>
+                    <div class="tool-item">
+                        <div class="tool-name">Tableau</div>
+                        <div class="tool-desc">Financial data visualization</div>
+                        <a href="https://www.tableau.com" target="_blank" class="tool-link">Visit</a>
+                    </div>
+                    <div class="tool-item">
+                        <div class="tool-name">Oracle ERP</div>
+                        <div class="tool-desc">Enterprise resource planning</div>
+                        <a href="https://www.oracle.com/erp/" target="_blank" class="tool-link">Visit</a>
+                    </div>
+                </div>
+            </div>
+        `;
+    } else if (section === 'Operations') {
+        // Add essential operations tools
+        specialContentHTML += `
+            <div class="dashboard-section">
+                <h3>Essential Operations Tools</h3>
+                <div class="tools-list">
+                    <div class="tool-item">
+                        <div class="tool-name">SAP</div>
+                        <div class="tool-desc">Enterprise operations management</div>
+                        <a href="https://www.sap.com" target="_blank" class="tool-link">Visit</a>
+                    </div>
+                    <div class="tool-item">
+                        <div class="tool-name">Asana</div>
+                        <div class="tool-desc">Project & workflow management</div>
+                        <a href="https://asana.com" target="_blank" class="tool-link">Visit</a>
+                    </div>
+                    <div class="tool-item">
+                        <div class="tool-name">NetSuite</div>
+                        <div class="tool-desc">Business management suite</div>
+                        <a href="https://www.netsuite.com" target="_blank" class="tool-link">Visit</a>
+                    </div>
+                    <div class="tool-item">
+                        <div class="tool-name">Salesforce</div>
+                        <div class="tool-desc">Customer relationship management</div>
+                        <a href="https://www.salesforce.com" target="_blank" class="tool-link">Visit</a>
+                    </div>
+                </div>
+            </div>
+        `;
     } else if (section === 'HR') {
         if (data.departmentDistribution) {
             const deptHTML = data.departmentDistribution.map(dept => 
@@ -487,6 +629,64 @@ function showSectionDashboard(section) {
                 </div>
             `;
         }
+        
+        // Add essential HR tools
+        specialContentHTML += `
+            <div class="dashboard-section">
+                <h3>Essential HR Tools</h3>
+                <div class="tools-list">
+                    <div class="tool-item">
+                        <div class="tool-name">Workday</div>
+                        <div class="tool-desc">HR management & employee self-service</div>
+                        <a href="https://www.workday.com" target="_blank" class="tool-link">Visit</a>
+                    </div>
+                    <div class="tool-item">
+                        <div class="tool-name">LinkedIn</div>
+                        <div class="tool-desc">Professional networking & recruiting</div>
+                        <a href="https://www.linkedin.com" target="_blank" class="tool-link">Visit</a>
+                    </div>
+                    <div class="tool-item">
+                        <div class="tool-name">BambooHR</div>
+                        <div class="tool-desc">HR software for small/medium businesses</div>
+                        <a href="https://www.bamboohr.com" target="_blank" class="tool-link">Visit</a>
+                    </div>
+                    <div class="tool-item">
+                        <div class="tool-name">Glassdoor</div>
+                        <div class="tool-desc">Company reviews & salary insights</div>
+                        <a href="https://www.glassdoor.com" target="_blank" class="tool-link">Visit</a>
+                    </div>
+                </div>
+            </div>
+        `;
+    } else if (section === 'Analytics') {
+        // Add essential analytics tools
+        specialContentHTML += `
+            <div class="dashboard-section">
+                <h3>Essential Analytics Tools</h3>
+                <div class="tools-list">
+                    <div class="tool-item">
+                        <div class="tool-name">Power BI</div>
+                        <div class="tool-desc">Business intelligence & data visualization</div>
+                        <a href="https://powerbi.microsoft.com" target="_blank" class="tool-link">Visit</a>
+                    </div>
+                    <div class="tool-item">
+                        <div class="tool-name">Google Analytics</div>
+                        <div class="tool-desc">Web analytics & user behavior</div>
+                        <a href="https://analytics.google.com" target="_blank" class="tool-link">Visit</a>
+                    </div>
+                    <div class="tool-item">
+                        <div class="tool-name">Looker</div>
+                        <div class="tool-desc">Business intelligence & big data analytics</div>
+                        <a href="https://looker.com" target="_blank" class="tool-link">Visit</a>
+                    </div>
+                    <div class="tool-item">
+                        <div class="tool-name">Snowflake</div>
+                        <div class="tool-desc">Data warehouse & analytics platform</div>
+                        <a href="https://www.snowflake.com" target="_blank" class="tool-link">Visit</a>
+                    </div>
+                </div>
+            </div>
+        `;
     }
     
     // Create action buttons based on section

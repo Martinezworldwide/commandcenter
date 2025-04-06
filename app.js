@@ -102,9 +102,20 @@ function init() {
 function setupStats() {
     try {
         stats = new Stats();
-        stats.domElement.style.position = 'absolute';
-        stats.domElement.style.top = '0px';
+        stats.dom.id = 'stats'; // Add id for CSS targeting
         container.appendChild(stats.dom || stats.domElement);
+        
+        // Override any internal positioning to ensure our CSS takes effect
+        setTimeout(() => {
+            const statsElement = document.getElementById('stats');
+            if (statsElement) {
+                statsElement.style.position = 'absolute';
+                statsElement.style.bottom = '10px';
+                statsElement.style.left = '10px';
+                statsElement.style.top = 'auto';
+                statsElement.style.right = 'auto';
+            }
+        }, 100);
     } catch (e) {
         console.warn('Stats initialization failed:', e);
         // Create dummy stats object

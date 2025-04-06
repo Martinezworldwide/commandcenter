@@ -184,7 +184,7 @@ body {
 /* Dashboard Styles */
 .overview-panel {
     top: 10px;
-    right: 80px;
+    left: 80px;
     width: 280px;
 }
 
@@ -393,7 +393,7 @@ body {
 @media (max-width: 768px) {
     .overview-panel {
         top: 10px;
-        right: 10px;
+        left: 10px;
         width: 220px;
     }
     
@@ -415,4 +415,80 @@ body {
 
 .value-updated {
     animation: value-pulse 1s ease;
+}
+
+/* Draggable panel styles */
+.panel.dragging {
+    opacity: 0.8;
+    box-shadow: 0 0 20px rgba(79, 195, 247, 0.8);
+    z-index: 100;
+}
+
+/* Position Stats panel at bottom left */
+#stats {
+    position: absolute !important;
+    bottom: 10px !important;
+    left: 10px !important;
+    top: auto !important;
+    right: auto !important;
+    z-index: 10 !important;
+}
+
+/* Tools list styling */
+.tools-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.tool-item {
+    background-color: rgba(25, 118, 210, 0.2);
+    border-radius: 5px;
+    padding: 8px;
+    border: 1px solid rgba(79, 195, 247, 0.3);
+    transition: all 0.3s ease;
+}
+
+.tool-item:hover {
+    background-color: rgba(25, 118, 210, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.tool-name {
+    font-weight: bold;
+    font-size: 13px;
+    color: #4fc3f7;
+    margin-bottom: 2px;
+}
+
+.tool-desc {
+    font-size: 11px;
+    color: #bbdefb;
+    margin-bottom: 5px;
+    line-height: 1.2;
+}
+
+.tool-link {
+    display: inline-block;
+    background-color: rgba(79, 195, 247, 0.2);
+    color: #4fc3f7;
+    text-decoration: none;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 11px;
+    transition: all 0.3s ease;
+}
+
+.tool-link:hover {
+    background-color: rgba(79, 195, 247, 0.5);
+    color: white;
+}
+
+/* Responsive adjustments for tools list */
+@media (max-width: 768px) {
+    .tools-list {
+        grid-template-columns: 1fr;
+    }
 }
