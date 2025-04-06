@@ -1,1 +1,162 @@
+body {
+    margin: 0;
+    overflow: hidden;
+    font-family: 'Arial', sans-serif;
+    background-color: #111;
+    color: #fff;
+}
 
+#container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+#info {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 10px;
+    border-radius: 5px;
+    pointer-events: none;
+    z-index: 10;
+}
+
+#info h1 {
+    margin: 0 0 5px 0;
+    font-size: 18px;
+    color: #4fc3f7;
+}
+
+#info p {
+    margin: 0;
+    font-size: 14px;
+    color: #bbdefb;
+}
+
+#loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 24px;
+    color: #4fc3f7;
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 20px;
+    border-radius: 10px;
+    z-index: 100;
+    transition: opacity 0.5s ease;
+}
+
+.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.panel {
+    position: absolute;
+    background-color: rgba(16, 33, 54, 0.85);
+    border: 1px solid #4fc3f7;
+    border-radius: 5px;
+    box-shadow: 0 0 15px rgba(79, 195, 247, 0.5);
+    color: white;
+    padding: 10px;
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #4fc3f7;
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+}
+
+.panel-title {
+    font-weight: bold;
+    color: #4fc3f7;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    color: #ff5252;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.menu-btn {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    background-color: #4fc3f7;
+    color: #222;
+    border: none;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 0 15px rgba(79, 195, 247, 0.7);
+    z-index: 20;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.menu-btn:hover {
+    background-color: #81d4fa;
+    transform: scale(1.1);
+}
+
+.action-menu {
+    position: absolute;
+    bottom: 90px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 20;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.action-btn {
+    background-color: #102136;
+    color: #4fc3f7;
+    border: 1px solid #4fc3f7;
+    border-radius: 5px;
+    padding: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.action-btn:hover {
+    background-color: #1a3b5f;
+    transform: scale(1.05);
+}
+
+.tooltip {
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 3px;
+    font-size: 12px;
+    pointer-events: none;
+    z-index: 100;
+    transition: opacity 0.3s ease;
+}
+
+.node {
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.node:hover {
+    transform: scale(1.1);
+}
+
+.connection {
+    pointer-events: none;
+}
