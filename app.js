@@ -21,8 +21,11 @@ const config = {
 };
 
 // Initialize the application
-init();
-animate();
+document.addEventListener('DOMContentLoaded', () => {
+    // Initialize only when DOM is fully loaded to ensure all scripts are available
+    init();
+    animate();
+});
 
 // Initialize the 3D environment
 function init() {
@@ -77,7 +80,10 @@ function init() {
     
     // Hide loading indicator
     setTimeout(() => {
-        document.getElementById('loading').classList.add('hidden');
+        const loadingElement = document.getElementById('loading');
+        if (loadingElement) {
+            loadingElement.classList.add('hidden');
+        }
     }, 1500);
 }
 
@@ -113,13 +119,31 @@ function setupRenderers() {
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     container.appendChild(renderer.domElement);
     
-    // CSS3D renderer
-    cssRenderer = new THREE.CSS3DRenderer();
-    cssRenderer.setSize(window.innerWidth, window.innerHeight);
-    cssRenderer.domElement.style.position = 'absolute';
-    cssRenderer.domElement.style.top = '0';
-    cssRenderer.domElement.style.pointerEvents = 'none';
-    container.appendChild(cssRenderer.domElement);
+    // CSS3D renderer - Check if available
+    if (typeof THREE.CSS3DRenderer === 'function') {
+        try {
+            cssRenderer = new THREE.CSS3DRenderer();
+            cssRenderer.setSize(window.innerWidth, window.innerHeight);
+            cssRenderer.domElement.style.position = 'absolute';
+            cssRenderer.domElement.style.top = '0';
+            cssRenderer.domElement.style.pointerEvents = 'none';
+            container.appendChild(cssRenderer.domElement);
+        } catch (e) {
+            console.warn('CSS3DRenderer failed to initialize:', e);
+            // Create a fallback for CSS3DRenderer
+            cssRenderer = {
+                render: function() {},
+                setSize: function() {}
+            };
+        }
+    } else {
+        console.warn('THREE.CSS3DRenderer not available, using fallback');
+        // Create a fallback for CSS3DRenderer
+        cssRenderer = {
+            render: function() {},
+            setSize: function() {}
+        };
+    }
 }
 
 // Create network nodes and connections
@@ -218,15 +242,26 @@ function createNode(data) {
     );
     nodeGroup.add(glowSphere);
     
-    // Add label
-    const labelDiv = document.createElement('div');
-    labelDiv.className = 'tooltip';
-    labelDiv.textContent = data.name;
-    labelDiv.style.opacity = '0';
-    
-    const label = new THREE.CSS3DObject(labelDiv);
-    label.position.set(0, data.size * config.nodeSize * 1.5, 0);
-    nodeGroup.add(label);
+    // Add label - check if CSS3DObject is available
+    if (typeof THREE.CSS3DObject === 'function') {
+        try {
+            const labelDiv = document.createElement('div');
+            labelDiv.className = 'tooltip';
+            labelDiv.textContent = data.name;
+            labelDiv.style.opacity = '0';
+            
+            const label = new THREE.CSS3DObject(labelDiv);
+            label.position.set(0, data.size * config.nodeSize * 1.5, 0);
+            nodeGroup.add(label);
+        } catch (e) {
+            console.warn('CSS3DObject failed to initialize:', e);
+            // Add a fallback label using sprite
+            createFallbackLabel(nodeGroup, data);
+        }
+    } else {
+        // Create a fallback label using sprite
+        createFallbackLabel(nodeGroup, data);
+    }
     
     // Add animation
     animateNode(nodeGroup);
@@ -235,6 +270,36 @@ function createNode(data) {
     nodeGroup.className = 'node';
     
     return nodeGroup;
+}
+
+// Create a fallback label using sprite
+function createFallbackLabel(nodeGroup, data) {
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+    canvas.width = 256;
+    canvas.height = 64;
+    
+    context.fillStyle = 'rgba(0, 0, 0, 0.7)';
+    context.fillRect(0, 0, canvas.width, canvas.height);
+    
+    context.font = '24px Arial';
+    context.fillStyle = '#4fc3f7';
+    context.textAlign = 'center';
+    context.fillText(data.name, 128, 40);
+    
+    const texture = new THREE.CanvasTexture(canvas);
+    const spriteMaterial = new THREE.SpriteMaterial({ 
+        map: texture,
+        transparent: true,
+        opacity: 0.7
+    });
+    
+    const sprite = new THREE.Sprite(spriteMaterial);
+    sprite.scale.set(2, 0.5, 1);
+    sprite.position.set(0, data.size * config.nodeSize * 1.5, 0);
+    sprite.visible = false;  // Initially hidden
+    sprite.userData = { isLabel: true };
+    nodeGroup.add(sprite);
 }
 
 // Create a connection between nodes
@@ -606,10 +671,19 @@ function onMouseMove(event) {
     // Reset cursor style
     document.body.style.cursor = 'default';
     
-    // Hide all tooltips
+    // Hide all tooltips (CSS3D)
     const tooltips = document.querySelectorAll('.tooltip');
     tooltips.forEach(tooltip => {
         tooltip.style.opacity = '0';
+    });
+    
+    // Hide all sprite labels (fallback)
+    nodes.forEach(node => {
+        node.traverse(child => {
+            if (child.userData && child.userData.isLabel) {
+                child.visible = false;
+            }
+        });
     });
     
     // Show tooltip on hover
@@ -619,12 +693,23 @@ function onMouseMove(event) {
         if (object && object.userData && object.userData.type === 'node') {
             document.body.style.cursor = 'pointer';
             
-            // Find and display the tooltip
+            // Show tooltip - try CSS3D first
+            let foundCSS3DTooltip = false;
             object.traverse(child => {
                 if (child instanceof THREE.CSS3DObject) {
                     child.element.style.opacity = '1';
+                    foundCSS3DTooltip = true;
                 }
             });
+            
+            // If no CSS3D tooltip found, use sprite label
+            if (!foundCSS3DTooltip) {
+                object.traverse(child => {
+                    if (child.userData && child.userData.isLabel) {
+                        child.visible = true;
+                    }
+                });
+            }
         }
     }
 }
@@ -667,14 +752,26 @@ function animate() {
     controls.update();
     
     // Update statistics
-    stats.update();
+    if (stats) {
+        stats.update();
+    }
     
     // Update TWEEN animations
-    TWEEN.update();
+    if (window.TWEEN) {
+        window.TWEEN.update();
+    }
     
     // Render scene
     renderer.render(scene, camera);
-    cssRenderer.render(scene, camera);
+    
+    // Only render CSS if the renderer is properly initialized
+    if (cssRenderer && typeof cssRenderer.render === 'function') {
+        try {
+            cssRenderer.render(scene, camera);
+        } catch (e) {
+            console.warn('CSS3DRenderer render failed:', e);
+        }
+    }
 }
 
 // Initialize TWEEN library
